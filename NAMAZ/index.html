@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="ru" dir="ltr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Аяты и напоминания</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      background-color: #000;
+      color: #fff;
+      overflow: hidden;
+      height: 100vh;
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    /* Скрыть весь основной контент, пока замок активен */
+    header, main { 
+      display: none; 
+    }
+
+    .lock-overlay {
+      position: fixed;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      z-index: 50;
+      background: #000;
+      padding: 20px;
+    }
+
+    .lock-card { 
+      width: min(500px, 92vw); 
+      padding: min(5vw, 30px);
+      border-radius: 22px;
+      background: rgba(20, 0, 0, 0.9);
+      border: 2px solid rgba(255, 0, 0, 0.6);
+      box-shadow: 0 0 40px rgba(255, 0, 0, 0.6), 0 0 80px rgba(150, 0, 0, 0.4);
+      text-align: center;
+      color: #eee;
+      animation: pulseRed 2s infinite;
+    }
+
+    .lock-head {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      justify-content: center;
+      margin-bottom: 16px;
+    }
+
+    .lock-icon {
+      width: 64px;
+      height: 64px;
+      border-radius: 16px;
+      display: grid;
+      place-items: center;
+      background: radial-gradient(circle, #ff0000 0%, #550000 70%);
+      color: white;
+      font-size: 2rem;
+      box-shadow: 0 0 25px rgba(255, 0, 0, 0.8);
+      animation: flicker 1.5s infinite;
+    }
+
+    .lock-title {
+      font-size: clamp(1.4rem, 5vw, 1.6rem);
+      margin: 0;
+      color: #ff4444;
+      text-shadow: 0 0 10px rgba(255, 0, 0, 0.7);
+    }
+
+    .lock-sub {
+      color: #999;
+      margin: 6px 0 0;
+      font-size: clamp(0.9rem, 3.5vw, 1rem);
+      line-height: 1.4;
+    }
+
+    .code-form {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 20px;
+    }
+
+    .code-input {
+      width: 100%;
+      padding: 16px;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 0, 0, 0.5);
+      background: #111;
+      color: #fff;
+      font-size: 16px;
+      outline: none;
+    }
+
+    .code-input:focus {
+      border-color: rgba(255, 0, 0, 0.8);
+      box-shadow: 0 0 10px rgba(255, 0, 0, 0.3);
+    }
+
+    .code-btn {
+      appearance: none;
+      border: 1px solid rgba(255, 0, 0, 0.5);
+      background: #300;
+      color: #fff;
+      padding: 16px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 16px;
+      transition: 0.3s;
+    }
+
+    .code-btn:hover, .code-btn:active {
+      background: #600;
+    }
+
+    .code-hint {
+      margin-top: 12px;
+      font-size: 13px;
+      color: #666;
+      line-height: 1.4;
+    }
+
+    .error {
+      color: #ff3333;
+      font-weight: 700;
+    }
+
+    .shake {
+      animation: shake 0.35s linear;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20% { transform: translateX(-6px); }
+      40% { transform: translateX(6px); }
+      60% { transform: translateX(-4px); }
+      80% { transform: translateX(4px); }
+    }
+
+    @keyframes pulseRed {
+      0%, 100% { 
+        box-shadow: 0 0 30px rgba(255, 0, 0, 0.7), 0 0 60px rgba(150, 0, 0, 0.4); 
+      }
+      50% { 
+        box-shadow: 0 0 60px rgba(255, 0, 0, 1), 0 0 100px rgba(200, 0, 0, 0.6); 
+      }
+    }
+
+    @keyframes flicker {
+      0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% { opacity: 1; }
+      20%, 24%, 55% { opacity: 0.4; }
+    }
+
+    /* Мигающий текст после ввода */
+    .warning-text {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: clamp(1.5rem, 6vw, 3rem);
+      font-weight: 900;
+      text-align: center;
+      color: #ff3333;
+      text-shadow: 0 0 10px rgba(255, 0, 0, 0.7), 0 0 20px rgba(255, 0, 0, 0.5);
+      z-index: 100;
+      animation: blink 1.5s infinite alternate, pulseRed 2s infinite;
+      padding: 20px;
+      border: 3px solid #ff3333;
+      border-radius: 15px;
+      background-color: rgba(0, 0, 0, 0.8);
+      width: 90%;
+      max-width: 500px;
+      line-height: 1.3;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.6; }
+    }
+
+    /* Улучшения для мобильных устройств */
+    @media (max-width: 480px) {
+      .lock-card {
+        padding: 25px 20px;
+        border-radius: 18px;
+      }
+      
+      .lock-icon {
+        width: 56px;
+        height: 56px;
+        font-size: 1.7rem;
+      }
+      
+      .code-form {
+        gap: 10px;
+      }
+      
+      .code-input, .code-btn {
+        padding: 14px;
+      }
+    }
+
+    @media (max-width: 350px) {
+      .lock-card {
+        padding: 20px 15px;
+      }
+      
+      .lock-icon {
+        width: 50px;
+        height: 50px;
+        font-size: 1.5rem;
+      }
+      
+      .lock-title {
+        font-size: 1.3rem;
+      }
+    }
+
+    /* Предотвращение масштабирования при фокусе на iOS */
+    @media (max-width: 768px) {
+      input, textarea, select {
+        font-size: 16px !important; /* Предотвращает масштабирование на iOS */
+      }
+    }
+  </style>
+</head>
+<body class="locked">
+  <!-- Замок и код -->
+  <div class="lock-overlay" id="lock">
+    <div class="lock-card">
+      <div class="lock-head">
+        <div class="lock-icon" aria-hidden="true">🔒</div>
+      </div>
+      <h2 class="lock-title">Введи код</h2>
+      <p class="lock-sub">Подсказка: это слово, связанное с твоим долгом.</p>
+      <form class="code-form" id="codeForm" autocomplete="off">
+        <input class="code-input" id="codeInput" placeholder="Напиши код…" aria-label="Код" inputmode="text" />
+        <button class="code-btn" type="submit">Открыть</button>
+      </form>
+      <div class="code-hint" id="codeHint">Можно писать строчными или ПРОПИСНЫМИ.</div>
+    </div>
+  </div>
+
+  <script>
+    const expectedCode = 'намаз';
+    const lockEl = document.getElementById('lock');
+    const formEl = document.getElementById('codeForm');
+    const inputEl = document.getElementById('codeInput');
+    const hintEl = document.getElementById('codeHint');
+
+    // Фокусировка на поле ввода при загрузке
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        inputEl.focus();
+      }, 300);
+    });
+
+    function norm(s) { 
+      return (s || '').toString().trim().toLowerCase().replace(/[ё]/g, 'е'); 
+    }
+
+    formEl.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const ok = norm(inputEl.value) === norm(expectedCode);
+      if (ok) {
+        document.body.classList.remove('locked');
+        lockEl.style.opacity = '0';
+        lockEl.style.transition = 'opacity .35s ease';
+        setTimeout(() => lockEl.remove(), 360);
+
+        const warningText = document.createElement('div');
+        warningText.className = 'warning-text';
+        warningText.textContent = 'ЧИТАЙ НАМАЗ — ПОКА НЕ ПОЗДНО!';
+        document.body.appendChild(warningText);
+        
+        // Вибрация при успешном вводе (если поддерживается)
+        if (navigator.vibrate) {
+          navigator.vibrate([100, 50, 100]);
+        }
+      } else {
+        inputEl.classList.remove('shake'); 
+        void inputEl.offsetWidth; 
+        inputEl.classList.add('shake');
+        hintEl.innerHTML = '<span class="error">Неверный код.</span> Попробуй снова.';
+        
+        // Вибрация при ошибке (если поддерживается)
+        if (navigator.vibrate) {
+          navigator.vibrate([200]);
+        }
+        
+        // Очистка поля ввода и повторный фокус
+        inputEl.value = '';
+        setTimeout(() => inputEl.focus(), 350);
+      }
+    });
+
+    // Закрытие клавиатуры по тапу вне поля ввода
+    document.addEventListener('click', (e) => {
+      if (e.target !== inputEl) {
+        inputEl.blur();
+      }
+    });
+  </script>
+</body>
+</html>
