@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Сюрприз для сестрёнки ❤️</title>
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      background: linear-gradient(135deg, #ffdde1, #ee9ca7);
+      overflow: hidden;
+      font-family: "Comic Sans MS", cursive, sans-serif;
+    }
+
+    .lock {
+      font-size: 100px;
+      margin-bottom: 20px;
+      transition: opacity 1s ease, transform 1s ease;
+    }
+
+    .inputs {
+      display: flex;
+      gap: 10px;
+    }
+
+    input {
+      width: 50px;
+      height: 50px;
+      font-size: 28px;
+      text-align: center;
+      border-radius: 10px;
+      border: 2px solid #444;
+    }
+
+    #message {
+      display: none;
+      font-size: 50px;
+      font-weight: bold;
+      color: #d60036;
+      text-shadow: 2px 2px 5px #fff;
+      animation: fadeIn 2s ease forwards;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.8); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    .heart {
+      position: absolute;
+      color: red;
+      font-size: 24px;
+      animation: floatUp 5s linear infinite;
+    }
+
+    @keyframes floatUp {
+      from { transform: translateY(0) scale(1); opacity: 1; }
+      to { transform: translateY(-100vh) scale(1.5); opacity: 0; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Замок -->
+  <div class="lock" id="lock">🔒</div>
+
+  <!-- Поле для пароля -->
+  <div class="inputs">
+    <input type="password" maxlength="1">
+    <input type="password" maxlength="1">
+    <input type="password" maxlength="1">
+    <input type="password" maxlength="1">
+  </div>
+
+  <!-- Сообщение -->
+  <div id="message">❤️ Только для сестрёнки ❤️</div>
+
+  <!-- Музыка -->
+  <audio id="bg-music" loop>
+    <source src="./WhatsApp Video 2025-09-02 at 14.02.15.mp3" type="audio/mpeg">
+  </audio>
+
+  <script>
+    const correctCode = "1234"; // твой пароль
+    const inputs = document.querySelectorAll("input");
+    const lock = document.getElementById("lock");
+    const message = document.getElementById("message");
+    const music = document.getElementById("bg-music");
+
+    // Перемещение фокуса
+    inputs.forEach((input, i) => {
+      input.addEventListener("input", () => {
+        if (input.value.length === 1 && i < inputs.length - 1) {
+          inputs[i + 1].focus();
+        }
+        checkCode();
+      });
+    });
+
+    function checkCode() {
+      let code = "";
+      inputs.forEach(inp => code += inp.value);
+
+      if (code === correctCode) {
+        unlock();
+      }
+    }
+
+    function unlock() {
+      lock.style.opacity = "0";
+      lock.style.transform = "scale(0.5)";
+
+      setTimeout(() => {
+        lock.style.display = "none";
+        message.style.display = "block";
+
+        // Запускаем музыку
+        music.play().catch(err => console.log("Музыка не запустилась:", err));
+
+        // Запускаем сердечки бесконечно
+        setInterval(createHeart, 200);
+      }, 1000);
+    }
+
+    function createHeart() {
+      const heart = document.createElement("div");
+      heart.className = "heart";
+      heart.innerHTML = "❤️";
+      heart.style.left = Math.random() * 100 + "vw";
+      heart.style.fontSize = (Math.random() * 20 + 20) + "px";
+      heart.style.animationDuration = (Math.random() * 3 + 3) + "s";
+
+      document.body.appendChild(heart);
+
+      setTimeout(() => heart.remove(), 6000);
+    }
+  </script>
+</body>
+</html>
