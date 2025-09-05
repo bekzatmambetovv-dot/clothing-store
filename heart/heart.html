@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>💗  💗</title>
+    <style type="text/css">
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            margin: 0;
+            overflow-x: hidden;
+            background: #000;
+            font-family: Arial, sans-serif;
+            color: white;
+            padding: 10px;
+            min-height: 100vh;
+            position: relative;
+        }
+        
+        canvas {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: 1;
+        }
+        
+        #pinkboard {
+            animation: anim 1.5s ease-in-out infinite;
+        }
+        
+        @keyframes anim {
+            0% { transform: scale(0.8); }
+            25% { transform: scale(0.7); }
+            50% { transform: scale(1); }
+            75% { transform: scale(0.7); }
+            100% { transform: scale(0.8); }
+        }
+        
+        .content {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            max-width: 100%;
+            padding: 15px;
+        }
+        
+        h1 {
+            text-align: center;
+            color: red;
+            font-size: 24px;
+            margin: 10px 0;
+            text-shadow: 0 0 5px rgba(255, 0, 0, 0.7);
+        }
+        
+        .image-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            margin: 15px 0;
+        }
+        
+        .image-box {
+            width: 150px;
+            height: 180px;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+            border: 2px solid #fff;
+        }
+        
+        .image-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .marquee-container {
+            margin: 15px 0;
+            overflow: hidden;
+            width: 100%;
+        }
+        
+        marquee {
+            margin: 10px 0;
+        }
+        
+        marquee img {
+            max-width: 120px;
+            height: auto;
+            border-radius: 8px;
+            margin: 0 10px;
+        }
+        
+        ul {
+            list-style: none;
+            padding: 0;
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        #wer {
+            font-size: 20px;
+            margin: 10px 0;
+            padding: 5px;
+            text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+        }
+        
+        p {
+            font-size: 20px;
+            font-weight: bold;
+            margin: 10px 0;
+            text-align: center;
+        }
+        
+        .floating-img {
+            position: relative;
+            margin: 15px auto;
+            width: 150px;
+            height: 180px;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 0 15px rgba(255, 105, 180, 0.6);
+            border: 3px solid #ff69b4;
+            animation-duration: 6s;
+            animation-iteration-count: infinite;
+            animation-timing-function: ease-in-out;
+            z-index: 10;
+        }
+        
+        .floating-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .floating-1 {
+            animation-name: float1;
+        }
+        
+        .floating-2 {
+            animation-name: float2;
+        }
+        
+        @keyframes float1 {
+            0% { transform: translateX(0); }
+            50% { transform: translateX(40px); }
+            100% { transform: translateX(0); }
+        }
+        
+        @keyframes float2 {
+            0% { transform: translateX(0); }
+            50% { transform: translateX(-40px); }
+            100% { transform: translateX(0); }
+        }
+        
+        /* Медиазапросы для адаптивности */
+        @media (min-width: 768px) {
+            h1 {
+                font-size: 32px;
+            }
+            
+            #wer {
+                font-size: 24px;
+            }
+            
+            p {
+                font-size: 24px;
+            }
+            
+            .image-box {
+                width: 180px;
+                height: 220px;
+            }
+            
+            .floating-img {
+                width: 180px;
+                height: 220px;
+            }
+            
+            @keyframes float1 {
+                0% { transform: translateX(0); }
+                50% { transform: translateX(80px); }
+                100% { transform: translateX(0); }
+            }
+            
+            @keyframes float2 {
+                0% { transform: translateX(0); }
+                50% { transform: translateX(-80px); }
+                100% { transform: translateX(0); }
+            }
+        }
+        
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 20px;
+            }
+            
+            #wer {
+                font-size: 18px;
+            }
+            
+            p {
+                font-size: 18px;
+            }
+            
+            .image-box {
+                width: 130px;
+                height: 160px;
+            }
+            
+            marquee img {
+                max-width: 100px;
+            }
+            
+            .floating-img {
+                width: 130px;
+                height: 160px;
+            }
+            
+            @keyframes float1 {
+                0% { transform: translateX(0); }
+                50% { transform: translateX(30px); }
+                100% { transform: translateX(0); }
+            }
+            
+            @keyframes float2 {
+                0% { transform: translateX(0); }
+                50% { transform: translateX(-30px); }
+                100% { transform: translateX(0); }
+            }
+        }
+        
+        /* Улучшенная анимация для canvas элементов */
+        @media (max-width: 768px) {
+            canvas {
+                transform: scale(1.2); /* Увеличиваем canvas для мобильных */
+            }
+            
+            #pinkboard {
+                animation: none; /* Отключаем сложную анимацию для производительности */
+            }
+        }
+    </style>
+</head>
+<body>
+    <canvas id="pinkboard"></canvas>
+    <canvas id="canvas"></canvas>
+    
+    <div class="content">
+        <h1>❤️  ❤️</h1>
+        
+        <div class="marquee-container">
+            <marquee behavior="scroll" direction="left">
+                <img src="./WhatsApp Image 2025-09-05 at 11.26.52.jpeg" alt="Семья">
+            </marquee>
+        </div>
+        
+        <ul>
+            <li id="wer" style="color: white;">Назик</li>
+            <li id="wer" style="color: red;">Ариет</li>
+            <li id="wer" style="color: pink;">Алия</li>
+            <li id="wer" style="color: orange;">Усман</li>
+        </ul>
+        
+        <div class="image-container">
+            <div class="floating-img floating-1">
+                <img src="./WhatsApp Image 2025-09-05 at 11.26.51.jpeg" alt="Фото 1">
+            </div>
+            
+            <div class="floating-img floating-2">
+                <img src="./WhatsApp Image 2025-09-05 at 11.26.51 (1).jpeg" alt="Фото 2">
+            </div>
+        </div>
+        
+        <div class="marquee-container">
+            <marquee behavior="alternate" direction="left" scrollamount="3">
+                <p style="color: red;">🤍 🤍</p>
+            </marquee>
+        </div>
+        
+        <div class="marquee-container">
+            <marquee behavior="alternate" direction="right" scrollamount="3">
+                <p style="color: blue;">💚 💚</p>
+            </marquee>
+        </div>
+        
+        <div class="marquee-container">
+            <marquee behavior="scroll" direction="right">
+                <img src="./WhatsApp Image 2025-09-05 at 11.28.49.jpeg" alt="Семейное фото">
+            </marquee>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        // Упрощенная версия скрипта для мобильных устройств
+        const colors = ["#eec996", "#8fb7d3", "#b7d4c6", "#c3bedd", "#f1d5e4", "#cae1d3"];
+        var canvas = document.getElementById("canvas");
+        var ctx = canvas.getContext("2d");
+        
+        var ww = window.innerWidth;
+        var wh = window.innerHeight;
+        var hearts = [];
+
+        function init() {
+            canvas.width = ww;
+            canvas.height = wh;
+            for (var i = 0; i < 50; i++) { // Уменьшено количество частиц для производительности
+                hearts.push(new Heart());
+            }
+            requestAnimationFrame(render);
+        }
+
+        function Heart() {
+            this.x = Math.random() * ww;
+            this.y = Math.random() * wh;
+            this.opacity = Math.random() * 0.5 + 0.3;
+            this.vel = {
+                x: (Math.random() - 0.5) * 2, // Уменьшена скорость для мобильных
+                y: (Math.random() - 0.5) * 2
+            };
+            this.scale = Math.random() * 0.1 + 0.05;
+        }
+
+        Heart.prototype.update = function () {
+            this.x += this.vel.x;
+            this.y += this.vel.y;
+            
+            if (this.x > ww || this.x < 0) this.vel.x = -this.vel.x;
+            if (this.y > wh || this.y < 0) this.vel.y = -this.vel.y;
+        };
+        
+        Heart.prototype.draw = function () {
+            ctx.globalAlpha = this.opacity;
+            ctx.fillStyle = colors[Math.floor(Math.random() * colors.length)];
+            ctx.font = `${100 * this.scale}px Arial`;
+            ctx.fillText("❤️", this.x, this.y);
+        };
+
+        function render() {
+            ctx.clearRect(0, 0, ww, wh);
+            for (var i = 0; i < hearts.length; i++) {
+                hearts[i].update();
+                hearts[i].draw();
+            }
+            requestAnimationFrame(render);
+        }
+        
+        // Инициализация после загрузки страницы
+        window.addEventListener('load', function() {
+            init();
+        });
+        
+        window.addEventListener("resize", function () {
+            ww = window.innerWidth;
+            wh = window.innerHeight;
+            canvas.width = ww;
+            canvas.height = wh;
+        });
+    </script>
+    
+    <script>
+        // Упрощенная анимация сердца
+        (function() {
+            var canvas = document.getElementById("pinkboard");
+            if (!canvas.getContext) return;
+            
+            var context = canvas.getContext("2d");
+            var time = 0;
+            
+            function onResize() {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            }
+            
+            function render() {
+                time += 0.01;
+                context.clearRect(0, 0, canvas.width, canvas.height);
+                
+                // Простая анимация сердца
+                context.fillStyle = "rgba(234, 128, 176, 0.3)";
+                context.beginPath();
+                var x = canvas.width/2;
+                var y = canvas.height/2;
+                var size = 20 + 5*Math.sin(time);
+                
+                for (var t = 0; t < 2 * Math.PI; t += 0.01) {
+                    var px = x + size * (16 * Math.pow(Math.sin(t), 3));
+                    var py = y - size * (13 * Math.cos(t) - 5*Math.cos(2*t) - 2*Math.cos(3*t) - Math.cos(4*t));
+                    context.lineTo(px, py);
+                }
+                context.fill();
+                
+                requestAnimationFrame(render);
+            }
+            
+            window.addEventListener("resize", onResize);
+            setTimeout(function() {
+                onResize();
+                render();
+            }, 10);
+        })();
+    </script>
+</body>
+</html>
